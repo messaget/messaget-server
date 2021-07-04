@@ -8,15 +8,16 @@ import (
 )
 
 type serverConfig struct {
-	Port     int `yaml:"listen_port"`
-	Url      string `yaml:"public_url"`
+	Port        int    `yaml:"listen_port"`
+	Url         string `yaml:"public_url"`
 	UseAutoCert bool   `yaml:"use_auto_cert"`
-	CertPath string `yaml:"cert_path"`
+	CertPath    string `yaml:"cert_path"`
 }
 
 type loggingConfig struct {
 	File string `yaml:"file"`
 	JSON bool   `yaml:"json"`
+	Prod bool   `yaml:"production"`
 }
 
 type authConfig struct {
@@ -25,10 +26,10 @@ type authConfig struct {
 }
 
 type config struct {
-	Server  serverConfig  `yaml:"server"`
-	Logging loggingConfig `yaml:"logging"`
-	Auth    authConfig    `yaml:"auth"`
-	logFileHandle  io.WriteCloser
+	Server        serverConfig  `yaml:"server"`
+	Logging       loggingConfig `yaml:"logging"`
+	Auth          authConfig    `yaml:"auth"`
+	logFileHandle io.WriteCloser
 }
 
 func getDefaultConfig() *config {
@@ -39,6 +40,7 @@ func getDefaultConfig() *config {
 	cfg.Server.CertPath = "/var/www/.cache"
 	cfg.Auth.AttemptsPerMinute = 2
 	cfg.Auth.Password = "super-secure-password"
+	cfg.Logging.Prod = true
 	return cfg
 }
 
@@ -64,7 +66,6 @@ func (cfg *config) setupLogging() error {
 	}
 	return nil
 }
-
 
 func getConfig(configString string, file *string) (*config, error) {
 	cfg := getDefaultConfig()

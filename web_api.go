@@ -9,6 +9,10 @@ import (
 )
 
 func setupWebApi(cnf *config) {
+	if cnf.Logging.Prod {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	r := gin.Default()
 
 	registerRoutes(cnf, r)

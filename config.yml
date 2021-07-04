@@ -1,0 +1,12 @@
+server:
+  listen_port: 443
+  public_url: messaget.example.com
+  use_auto_cert: false
+  cert_path: /var/www/.cache
+logging:
+  file: ""
+  json: false
+  production: true
+auth:
+  password: super-secure-password
+  attempts_per_hour: 2
