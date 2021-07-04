@@ -11,6 +11,7 @@ type serverConfig struct {
 	Port     int `yaml:"listen_port"`
 	Url      string `yaml:"public_url"`
 	UseAutoCert bool   `yaml:"use_auto_cert"`
+	CertPath string `yaml:"cert_path"`
 }
 
 type loggingConfig struct {
@@ -35,6 +36,7 @@ func getDefaultConfig() *config {
 	cfg.Server.Url = "messaget.example.com"
 	cfg.Server.UseAutoCert = false
 	cfg.Server.Port = 443
+	cfg.Server.CertPath = "/var/www/.cache"
 	cfg.Auth.AttemptsPerMinute = 2
 	cfg.Auth.Password = "super-secure-password"
 	return cfg

@@ -40,4 +40,7 @@ func main()  {
 	if err != nil {
 		errorLogger.Fatalf("Failed to get config: %v", err)
 	}
+
+	// setup modules
+	setupWebApi(cnf)
 }
