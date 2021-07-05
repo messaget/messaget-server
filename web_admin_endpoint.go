@@ -15,6 +15,7 @@ func registerAdminIntents() {
 	intentHandler.AddIntent("FIND_BY_IDS", intendFindByIds)
 	intentHandler.AddIntent("FIND_BY_NAMESPACE", intentFindByNamespaces)
 	intentHandler.AddIntent("FIND_BY_NAMESPACE_EXACT", intentFindByNamespaceExact)
+	intentHandler.AddIntent("KICK_CLIENTS_BY_ID", intentKickClients)
 }
 
 func handleIntentEndpoint(c *gin.Context) {

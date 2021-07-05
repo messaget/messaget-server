@@ -66,6 +66,25 @@ func intendFindByIds(c *gin.Context, intent intent.Intent) {
 	c.JSON(200, sil)
 }
 
+func intentKickClients(c *gin.Context, intent intent.Intent) {
+	sessionLock.RLock()
+	defer sessionLock.RUnlock()
+
+	// find targets
+	var sil []*Session
+	for i := range intent.Targets {
+		for s := range sessionMap {
+			if sessionMap[s].Id == intent.Targets[i] {
+				sil = append(sil, sessionMap[s])
+				sessionMap[s].Ws.Close()
+			}
+		}
+	}
+
+	c.JSON(200, sil)
+}
+
+
 func intentSendToId(c *gin.Context, intent intent.Intent) {
 	sessionLock.RLock()
 	defer sessionLock.RUnlock()
