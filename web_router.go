@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
 )
@@ -12,6 +13,10 @@ func registerRoutes(cnf *config, r *gin.Engine) {
 	r.GET("/", func(c *gin.Context) {
 		c.Redirect(301, "http://www.github.com/messaget")
 	})
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"*"}
+	r.Use(cors.New(config))
 
 	// groups
 	authGroup := r.Group("/api")

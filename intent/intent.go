@@ -11,6 +11,7 @@ type Intent struct {
 	Intent  string   `json:"intent"`
 	Targets []string `json:"targets"`
 	Message string   `json:"message"`
+	Namespace string   `json:"namespace"`
 }
 
 type IntentHandler struct {

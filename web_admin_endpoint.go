@@ -12,6 +12,9 @@ var intentHandler = intent.NewIntentMap()
 func registerAdminIntents() {
 	intentHandler.AddIntent("LIST_CLIENTS", intentListClients)
 	intentHandler.AddIntent("SEND_TO_IDS", intentSendToId)
+	intentHandler.AddIntent("FIND_BY_IDS", intendFindByIds)
+	intentHandler.AddIntent("FIND_BY_NAMESPACE", intentFindByNamespaces)
+	intentHandler.AddIntent("FIND_BY_NAMESPACE_EXACT", intentFindByNamespaceExact)
 }
 
 func handleIntentEndpoint(c *gin.Context) {
