@@ -7,25 +7,24 @@ import (
 )
 
 var (
-	guid = xid.New()
-	sessionMap = make(map[string]*session)
+	sessionMap  = make(map[string]*Session)
 	sessionLock sync.RWMutex
 )
 
-type session struct {
-	namespace string
-	id        string
-	ip        string
-	ws        *melody.Session
+type Session struct {
+	Namespace string          `json:"namespace"`
+	Id        string          `json:"id"`
+	Ip        string          `json:"ip"`
+	Ws        *melody.Session `json:"-"`
 }
 
-func NewSession(namespace string, ip string, m *melody.Session) (string, *session)  {
-	var id = guid.String();
-	var s = &session{
-		namespace: namespace,
-		id: id,
-		ip: ip,
-		ws: m,
+func NewSession(namespace string, ip string, m *melody.Session) (string, *Session) {
+	var id = xid.New().String()
+	var s = &Session{
+		Namespace: namespace,
+		Id:        id,
+		Ip:        ip,
+		Ws:        m,
 	}
 	sessionLock.Lock()
 	defer sessionLock.Unlock()
@@ -33,7 +32,7 @@ func NewSession(namespace string, ip string, m *melody.Session) (string, *sessio
 	return id, s
 }
 
-func UnmapSession(id string)  {
+func UnmapSession(id string) {
 	sessionLock.Lock()
 	defer sessionLock.Unlock()
 	delete(sessionMap, id)

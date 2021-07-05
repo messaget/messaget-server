@@ -45,8 +45,9 @@ func registerRoutes(cnf *config, r *gin.Engine) {
 	})
 
 	setupMelody()
+	registerAdminIntents()
 
 	// endpoints
 	publicGroup.GET("/attach", handleClientEndpoint)
-
+	authGroup.POST("/intent", handleIntentEndpoint)
 }

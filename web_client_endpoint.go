@@ -37,24 +37,24 @@ func setupMelody()  {
 	})
 
 	clientMelody.HandleConnect(func(s *melody.Session) {
-		// build session
+		// build Session
 		var query = s.Request.URL.Query()
 		var namespace = query.Get("namespace")
 		var remoteIp = readUserIp(s.Request)
 
 		id, session := NewSession(namespace, remoteIp, s)
-		s.Set("session", session)
+		s.Set("Session", session)
 
-		infoLogger.Println("Accepted public client ", id)
+		infoLogger.Println("Accepted public client", id)
 	})
 
 	clientMelody.HandleDisconnect(func(s *melody.Session) {
-		// get session
-		var r, _ = s.Get("session")
-		var session = r.(*session)
+		// get Session
+		var r, _ = s.Get("Session")
+		var session = r.(*Session)
 
-		infoLogger.Println("Dropping public client ", session.id)
-		UnmapSession(session.id)
+		infoLogger.Println("Dropping public client", session.Id)
+		UnmapSession(session.Id)
 	})
 
 	clientMelody.HandleMessage(func(s *melody.Session, msg []byte) {
