@@ -9,4 +9,5 @@ logging:
   production: true
 auth:
   password: super-secure-password
-  attempts_per_hour: 2
+
+  max_namespace_length: 50

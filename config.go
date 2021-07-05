@@ -21,8 +21,9 @@ type loggingConfig struct {
 }
 
 type authConfig struct {
-	Password          string `yaml:"password"`
-	AttemptsPerMinute int    `yaml:"attempts_per_hour"`
+	Password           string `yaml:"password"`
+	ConnectionsPerSecond  int    `yaml:"connections_per_second"`
+	MaxNamespaceLength int    `yaml:"max_namespace_length"`
 }
 
 type config struct {
@@ -38,8 +39,9 @@ func getDefaultConfig() *config {
 	cfg.Server.UseAutoCert = false
 	cfg.Server.Port = 443
 	cfg.Server.CertPath = "/var/www/.cache"
-	cfg.Auth.AttemptsPerMinute = 2
+	cfg.Auth.ConnectionsPerSecond = 2
 	cfg.Auth.Password = "super-secure-password"
+	cfg.Auth.MaxNamespaceLength = 50
 	cfg.Logging.Prod = true
 	return cfg
 }
