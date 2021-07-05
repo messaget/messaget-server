@@ -46,4 +46,6 @@ func registerRoutes(cnf *config, r *gin.Engine) {
 		}
 	})
 
+	setupMelody()
+
 }

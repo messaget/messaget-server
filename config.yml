@@ -9,5 +9,5 @@ logging:
   production: true
 auth:
   password: super-secure-password
-
+  connections_per_second: 2
   max_namespace_length: 50
