@@ -33,11 +33,9 @@ func registerRoutes(cnf *config, r *gin.Engine) {
 	})
 
 	authGroup.Use(func(c *gin.Context) {
-		p, f := c.Params.Get("password")
-		if f {
-			if p == cnf.Auth.Password {
-				return
-			}
+		p := c.Query("password")
+		if p == cnf.Auth.Password {
+			return
 		}
 		err := c.AbortWithError(401, BadAuthError)
 		if err != nil {
@@ -47,5 +45,8 @@ func registerRoutes(cnf *config, r *gin.Engine) {
 	})
 
 	setupMelody()
+
+	// endpoints
+	publicGroup.GET("/attach", handleClientEndpoint)
 
 }
