@@ -24,8 +24,6 @@ func main()  {
 	configFile := flag.String("config", "config.yml", "config file")
 	flag.Parse()
 
-	flag.Parse()
-
 	configString := ""
 	if *configFile != "" {
 		configBytes, err := ioutil.ReadFile(*configFile)

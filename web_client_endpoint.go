@@ -3,21 +3,13 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/olahol/melody.v1"
+	"net/http"
 )
 
 var clientMelody = melody.New()
 
 func handleClientEndpoint(c *gin.Context) {
-	ns, found := c.Params.Get("namespace")
-
-	if !found {
-		err := c.AbortWithError(400, NoNamespaceError)
-		if err != nil {
-			errorLogger.Println(err)
-			c.Abort()
-			return
-		}
-	}
+	ns := c.Query("namespace")
 
 	if len(ns) > cnf.Auth.MaxNamespaceLength {
 		err := c.AbortWithError(400, NamespaceTooLong)
@@ -44,11 +36,39 @@ func setupMelody()  {
 		errorLogger.Println(err)
 	})
 
-	clientMelody.HandleDisconnect(func(session *melody.Session) {
+	clientMelody.HandleConnect(func(s *melody.Session) {
+		// build session
+		var query = s.Request.URL.Query()
+		var namespace = query.Get("namespace")
+		var remoteIp = readUserIp(s.Request)
 
+		id, session := NewSession(namespace, remoteIp, s)
+		s.Set("session", session)
+
+		infoLogger.Println("Accepted public client ", id)
+	})
+
+	clientMelody.HandleDisconnect(func(s *melody.Session) {
+		// get session
+		var r, _ = s.Get("session")
+		var session = r.(*session)
+
+		infoLogger.Println("Dropping public client ", session.id)
+		UnmapSession(session.id)
 	})
 
 	clientMelody.HandleMessage(func(s *melody.Session, msg []byte) {
 
 	})
+}
+
+func readUserIp(r *http.Request) string {
+	IPAddress := r.Header.Get("X-Real-Ip")
+	if IPAddress == "" {
+		IPAddress = r.Header.Get("X-Forwarded-For")
+	}
+	if IPAddress == "" {
+		IPAddress = r.RemoteAddr
+	}
+	return IPAddress
 }
