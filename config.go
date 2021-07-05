@@ -21,9 +21,11 @@ type loggingConfig struct {
 }
 
 type authConfig struct {
-	Password           string `yaml:"password"`
-	ConnectionsPerSecond  int    `yaml:"connections_per_second"`
-	MaxNamespaceLength int    `yaml:"max_namespace_length"`
+	Password             string `yaml:"password"`
+	ConnectionsPerSecond int    `yaml:"connections_per_second"`
+	MaxNamespaceLength   int    `yaml:"max_namespace_length"`
+	UseClientPassword    bool   `yaml:"use_client_password"`
+	ClientPassword       string `yaml:"client_password"`
 }
 
 type config struct {
@@ -42,6 +44,8 @@ func getDefaultConfig() *config {
 	cfg.Auth.ConnectionsPerSecond = 2
 	cfg.Auth.Password = "super-secure-password"
 	cfg.Auth.MaxNamespaceLength = 50
+	cfg.Auth.UseClientPassword = false
+	cfg.Auth.ClientPassword = "another-secret-password"
 	cfg.Logging.Prod = true
 	return cfg
 }

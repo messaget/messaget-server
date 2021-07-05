@@ -33,6 +33,19 @@ func registerRoutes(cnf *config, r *gin.Engine) {
 					errorLogger.Println(err)
 					c.Abort()
 				}
+				return
+			}
+		}
+
+		if cnf.Auth.UseClientPassword {
+			p := c.Query("password")
+			if p == cnf.Auth.ClientPassword {
+				return
+			}
+			err := c.AbortWithError(401, BadAuthError)
+			if err != nil {
+				errorLogger.Println(err)
+				c.Abort()
 			}
 		}
 	})
