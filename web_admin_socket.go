@@ -9,7 +9,7 @@ import (
 var adminMelody = melody.New()
 
 func handleControllerSocketEndpoint(c *gin.Context) {
-	err := clientMelody.HandleRequest(c.Writer, c.Request)
+	err := adminMelody.HandleRequest(c.Writer, c.Request)
 	if err != nil {
 		err := c.AbortWithError(400, err)
 		if err != nil {
@@ -54,14 +54,22 @@ func serializeToBytes(i interface{}) []byte  {
 	return bolB
 }
 
+type UpdatePacket struct {
+	Event string `json:"event"`
+	Client Session `json:"client"`
+}
+
 func broadcastClientJoin(session *Session)  {
 	adminSessionLock.RLock()
 	defer adminSessionLock.RUnlock()
 	for s := range adminSessionMap {
-		adminSessionMap[s].Ws.Write(serializeToBytes(gin.H{
-			"event": "CLIENT_ADD",
-			"client": sessionMap,
+		err := adminSessionMap[s].Ws.Write(serializeToBytes(UpdatePacket{
+			Event: "CLIENT_ADD",
+			Client: *session,
 		}))
+		if err != nil {
+			errorLogger.Println(err)
+		}
 	}
 }
 
@@ -69,9 +77,12 @@ func broadcastClientLeave(session *Session)  {
 	adminSessionLock.RLock()
 	defer adminSessionLock.RUnlock()
 	for s := range adminSessionMap {
-		adminSessionMap[s].Ws.Write(serializeToBytes(gin.H{
-			"event": "CLIENT_LEAVE",
-			"client": sessionMap,
+		err := adminSessionMap[s].Ws.Write(serializeToBytes(UpdatePacket{
+			Event: "CLIENT_LEAVE",
+			Client: *session,
 		}))
+		if err != nil {
+			errorLogger.Println(err)
+		}
 	}
 }

@@ -33,6 +33,8 @@ func main()  {
 		}
 	}
 
+	infoLogger.Println("Starting...")
+
 	var err error
 	cnf, err = getConfig(configString, configFile)
 	if err != nil {
