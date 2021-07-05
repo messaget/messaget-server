@@ -42,10 +42,11 @@ func setupMelody()  {
 		var namespace = query.Get("namespace")
 		var remoteIp = readUserIp(s.Request)
 
-		id, session := NewSession(namespace, remoteIp, s)
+		id, session := NewSession(namespace, remoteIp, s, false)
 		s.Set("Session", session)
 
 		infoLogger.Println("Accepted public client", id)
+		broadcastClientJoin(session)
 	})
 
 	clientMelody.HandleDisconnect(func(s *melody.Session) {
@@ -54,11 +55,13 @@ func setupMelody()  {
 		var session = r.(*Session)
 
 		infoLogger.Println("Dropping public client", session.Id)
-		UnmapSession(session.Id)
+
+		UnmapSession(session.Id, false)
+		broadcastClientLeave(session)
 	})
 
 	clientMelody.HandleMessage(func(s *melody.Session, msg []byte) {
-
+		// TODO: Make this work, somehow
 	})
 }
 

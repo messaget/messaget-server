@@ -84,7 +84,6 @@ func intentKickClients(c *gin.Context, intent intent.Intent) {
 	c.JSON(200, sil)
 }
 
-
 func intentSendToId(c *gin.Context, intent intent.Intent) {
 	sessionLock.RLock()
 	defer sessionLock.RUnlock()

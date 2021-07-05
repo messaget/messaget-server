@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/tls"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/acme/autocert"
 	"net/http"
@@ -25,14 +24,13 @@ func setupWebApi(cnf *config) {
 		}
 
 		server := &http.Server{
-			Addr:    ":" + strconv.Itoa(cnf.Server.Port),
-			Handler: r,
-			TLSConfig: &tls.Config{
-				GetCertificate: certManager.GetCertificate,
-			},
+			Addr:      ":" + strconv.Itoa(cnf.Server.Port),
+			Handler:   r,
+			TLSConfig: certManager.TLSConfig(),
 		}
 
-		go errorLogger.Fatalln(http.ListenAndServe(":"+strconv.Itoa(cnf.Server.Port), certManager.HTTPHandler(server.Handler)))
+		go errorLogger.Fatalln(server.ListenAndServeTLS("", ""))
+		// go errorLogger.Fatalln(http.l(":"+strconv.Itoa(cnf.Server.Port), certManager.HTTPHandler(server.Handler)))
 	} else {
 		go errorLogger.Fatalln(r.Run(":" + strconv.Itoa(cnf.Server.Port)))
 	}

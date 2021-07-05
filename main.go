@@ -41,4 +41,7 @@ func main()  {
 
 	// setup modules
 	setupWebApi(cnf)
+	select {
+
+	}
 }
