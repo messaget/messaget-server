@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func intentListClients(c *gin.Context, intent intent.Intent) {
+func intentListClients(intent intent.Intent) (interface{}, int, error) {
 	sessionLock.RLock()
 	defer sessionLock.RUnlock()
 
@@ -21,10 +21,10 @@ func intentListClients(c *gin.Context, intent intent.Intent) {
 		sil = make([]*Session, 0)
 	}
 
-	c.JSON(200, sil)
+	return sil, 200, nil
 }
 
-func intentFindByNamespaceExact(c *gin.Context, intent intent.Intent) {
+func intentFindByNamespaceExact(intent intent.Intent) (interface{}, int, error) {
 	sessionLock.RLock()
 	defer sessionLock.RUnlock()
 
@@ -40,10 +40,10 @@ func intentFindByNamespaceExact(c *gin.Context, intent intent.Intent) {
 		sil = make([]*Session, 0)
 	}
 
-	c.JSON(200, sil)
+	return sil, 200, nil
 }
 
-func intentFindByNamespaces(c *gin.Context, intent intent.Intent) {
+func intentFindByNamespaces(intent intent.Intent) (interface{}, int, error) {
 	sessionLock.RLock()
 	defer sessionLock.RUnlock()
 
@@ -59,10 +59,10 @@ func intentFindByNamespaces(c *gin.Context, intent intent.Intent) {
 		sil = make([]*Session, 0)
 	}
 
-	c.JSON(200, sil)
+	return sil, 200, nil
 }
 
-func intendFindByIds(c *gin.Context, intent intent.Intent) {
+func intendFindByIds(intent intent.Intent) (interface{}, int, error) {
 	sessionLock.RLock()
 	defer sessionLock.RUnlock()
 
@@ -80,10 +80,10 @@ func intendFindByIds(c *gin.Context, intent intent.Intent) {
 		sil = make([]*Session, 0)
 	}
 
-	c.JSON(200, sil)
+	return sil, 200, nil
 }
 
-func intentKickClients(c *gin.Context, intent intent.Intent) {
+func intentKickClients(intent intent.Intent) (interface{}, int, error) {
 	sessionLock.RLock()
 	defer sessionLock.RUnlock()
 
@@ -102,10 +102,10 @@ func intentKickClients(c *gin.Context, intent intent.Intent) {
 		sil = make([]*Session, 0)
 	}
 
-	c.JSON(200, sil)
+	return sil, 200, nil
 }
 
-func intentSendToId(c *gin.Context, intent intent.Intent) {
+func intentSendToId(intent intent.Intent) (interface{}, int, error) {
 	sessionLock.RLock()
 	defer sessionLock.RUnlock()
 
@@ -128,7 +128,7 @@ func intentSendToId(c *gin.Context, intent intent.Intent) {
 		}
 	}
 
-	c.JSON(200, gin.H{
+	return gin.H{
 		"sent": strconv.Itoa(send),
-	})
+	}, 200, nil
 }

@@ -43,5 +43,13 @@ func handleIntentEndpoint(c *gin.Context) {
 		return
 	}
 
-	handler(c, i)
+	response, statusCode, err := handler(i)
+
+	if err != nil {
+		errorLogger.Println(err)
+		c.JSON(500, err)
+	} else {
+		c.JSON(statusCode, response)
+	}
+
 }

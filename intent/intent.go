@@ -2,10 +2,9 @@ package intent
 
 import (
 	"errors"
-	"github.com/gin-gonic/gin"
 )
 
-type Handler func(c *gin.Context, intent Intent)
+type Handler func(intent Intent) (interface{}, int, error)
 
 type Intent struct {
 	Intent  string   `json:"intent"`
