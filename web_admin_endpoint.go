@@ -22,6 +22,7 @@ func handleIntentEndpoint(c *gin.Context) {
 	// attempt to parse the intent
 	jsonData, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
+		errorLogger.Println(err)
 		c.JSON(400, FailedIntent)
 		return
 	}
@@ -29,6 +30,7 @@ func handleIntentEndpoint(c *gin.Context) {
 	// parse
 	var i intent.Intent
 	if err := json.Unmarshal(jsonData, &i); err != nil {
+		errorLogger.Println(err)
 		c.JSON(400, FailedIntent)
 		return
 	}
@@ -36,6 +38,7 @@ func handleIntentEndpoint(c *gin.Context) {
 	// handle
 	handler, err := intentHandler.GetHandler(i.Intent)
 	if err != nil {
+		errorLogger.Println(err)
 		c.JSON(400, FailedIntent)
 		return
 	}

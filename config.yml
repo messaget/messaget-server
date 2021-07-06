@@ -1,8 +1,11 @@
 server:
   listen_port: 443
   public_url: messaget.example.com
-  use_auto_cert: false
   cert_path: /var/www/.cache
+  use_auto_cert: false
+  use_manual_cert: false
+  manual_full_chain: ""
+  manual_private: ""
 logging:
   file: ""
   json: false

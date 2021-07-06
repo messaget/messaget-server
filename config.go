@@ -8,10 +8,13 @@ import (
 )
 
 type serverConfig struct {
-	Port        int    `yaml:"listen_port"`
-	Url         string `yaml:"public_url"`
-	UseAutoCert bool   `yaml:"use_auto_cert"`
-	CertPath    string `yaml:"cert_path"`
+	Port            int    `yaml:"listen_port"`
+	Url             string `yaml:"public_url"`
+	CertPath        string `yaml:"cert_path"`
+	UseAutoCert     bool   `yaml:"use_auto_cert"`
+	UseManualCert   bool   `yaml:"use_manual_cert"`
+	ManualFullChain string `yaml:"manual_full_chain"`
+	ManualPrivate   string `yaml:"manual_private"`
 }
 
 type loggingConfig struct {
@@ -39,6 +42,9 @@ func getDefaultConfig() *config {
 	cfg := &config{}
 	cfg.Server.Url = "messaget.example.com"
 	cfg.Server.UseAutoCert = false
+	cfg.Server.UseManualCert = false
+	cfg.Server.ManualFullChain = ""
+	cfg.Server.ManualPrivate = ""
 	cfg.Server.Port = 443
 	cfg.Server.CertPath = "/var/www/.cache"
 	cfg.Auth.ConnectionsPerSecond = 2
