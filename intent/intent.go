@@ -7,10 +7,11 @@ import (
 type Handler func(intent Intent) (interface{}, int, error)
 
 type Intent struct {
-	Intent  string   `json:"intent"`
-	Targets []string `json:"targets"`
-	Message string   `json:"message"`
-	Namespace string   `json:"namespace"`
+	TransactionId string   `json:"transaction_id"`
+	Intent        string   `json:"intent"`
+	Targets       []string `json:"targets"`
+	Message       string   `json:"message"`
+	Namespace     string   `json:"namespace"`
 }
 
 type IntentHandler struct {

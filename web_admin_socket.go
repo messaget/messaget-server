@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/messaget/messaget/intent"
 	"gopkg.in/olahol/melody.v1"
 )
 
@@ -20,7 +21,14 @@ func handleControllerSocketEndpoint(c *gin.Context) {
 	}
 }
 
-func setupAdminMelody()  {
+type socketTransactionResponse struct {
+	Failed   bool        `json:"failed"`
+	Id       string      `json:"transaction_id"`
+	Status   int         `json:"status"`
+	Response interface{} `json:"response"`
+}
+
+func setupAdminMelody() {
 	adminMelody.HandleError(func(session *melody.Session, err error) {
 		errorLogger.Println(err)
 	})
@@ -45,26 +53,64 @@ func setupAdminMelody()  {
 	})
 
 	adminMelody.HandleMessage(func(s *melody.Session, msg []byte) {
-		// TODO: Make this work, somehow
+		// parse
+		var i intent.Intent
+		if err := json.Unmarshal(msg, &i); err != nil {
+			errorLogger.Println(err)
+			// nothing? I suppose
+			return
+		}
+
+		// handle
+		handler, err := intentHandler.GetHandler(i.Intent)
+		if err != nil {
+			errorLogger.Println(err)
+			s.Write(serializeToBytes(socketTransactionResponse{
+				Failed:   true,
+				Id:       i.TransactionId,
+				Status:   400,
+				Response: "Unknown intent " + i.Intent,
+			}))
+			return
+		}
+
+		response, statusCode, err := handler(i)
+
+		if err != nil {
+			// fail transaction ID
+			s.Write(serializeToBytes(socketTransactionResponse{
+				Failed:   true,
+				Id:       i.TransactionId,
+				Status:   statusCode,
+				Response: err,
+			}))
+		} else {
+			s.Write(serializeToBytes(socketTransactionResponse{
+				Failed:   false,
+				Id:       i.TransactionId,
+				Status:   statusCode,
+				Response: response,
+			}))
+		}
 	})
 }
 
-func serializeToBytes(i interface{}) []byte  {
+func serializeToBytes(i interface{}) []byte {
 	bolB, _ := json.Marshal(i)
 	return bolB
 }
 
 type UpdatePacket struct {
-	Event string `json:"event"`
+	Event  string  `json:"event"`
 	Client Session `json:"client"`
 }
 
-func broadcastClientJoin(session *Session)  {
+func broadcastClientJoin(session *Session) {
 	adminSessionLock.RLock()
 	defer adminSessionLock.RUnlock()
 	for s := range adminSessionMap {
 		err := adminSessionMap[s].Ws.Write(serializeToBytes(UpdatePacket{
-			Event: "CLIENT_ADD",
+			Event:  "CLIENT_ADD",
 			Client: *session,
 		}))
 		if err != nil {
@@ -73,12 +119,12 @@ func broadcastClientJoin(session *Session)  {
 	}
 }
 
-func broadcastClientLeave(session *Session)  {
+func broadcastClientLeave(session *Session) {
 	adminSessionLock.RLock()
 	defer adminSessionLock.RUnlock()
 	for s := range adminSessionMap {
 		err := adminSessionMap[s].Ws.Write(serializeToBytes(UpdatePacket{
-			Event: "CLIENT_LEAVE",
+			Event:  "CLIENT_LEAVE",
 			Client: *session,
 		}))
 		if err != nil {
