@@ -22,6 +22,7 @@ func handleControllerSocketEndpoint(c *gin.Context) {
 }
 
 type socketTransactionResponse struct {
+	Event    string      `json:"event"`
 	Failed   bool        `json:"failed"`
 	Id       string      `json:"transaction_id"`
 	Status   int         `json:"status"`
@@ -66,6 +67,7 @@ func setupAdminMelody() {
 		if err != nil {
 			errorLogger.Println(err)
 			s.Write(serializeToBytes(socketTransactionResponse{
+				Event: "TRANSACTION",
 				Failed:   true,
 				Id:       i.TransactionId,
 				Status:   400,
@@ -79,6 +81,7 @@ func setupAdminMelody() {
 		if err != nil {
 			// fail transaction ID
 			s.Write(serializeToBytes(socketTransactionResponse{
+				Event: "TRANSACTION",
 				Failed:   true,
 				Id:       i.TransactionId,
 				Status:   statusCode,
@@ -86,6 +89,7 @@ func setupAdminMelody() {
 			}))
 		} else {
 			s.Write(serializeToBytes(socketTransactionResponse{
+				Event: "TRANSACTION",
 				Failed:   false,
 				Id:       i.TransactionId,
 				Status:   statusCode,
